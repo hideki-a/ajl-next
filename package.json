@@ -5,9 +5,9 @@
   "scripts": {
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "server": "http-server -p 3000 -e js",
-    "test": "start-server-and-test server http://localhost:3000 cypress",
-    "test:headless": "start-server-and-test server http://localhost:3000 cypress:headless"
+    "serve": "http-server -p 3000 -e js",
+    "test": "start-server-and-test serve http://localhost:3000 cypress",
+    "test:headless": "start-server-and-test serve http://localhost:3000 cypress:headless"
   },
   "author": "ABE Hideki",
   "license": "UNLICENSED",
