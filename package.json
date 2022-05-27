@@ -1,0 +1,20 @@
+{
+  "name": "ajl-next",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run",
+    "server": "http-server -p 3000 -e js",
+    "test": "start-server-and-test server http://localhost:3000 cypress",
+    "test:headless": "start-server-and-test server http://localhost:3000 cypress:headless"
+  },
+  "author": "ABE Hideki",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "cypress": "^9.7.0",
+    "http-server": "^14.1.0",
+    "start-server-and-test": "^1.14.0"
+  }
+}

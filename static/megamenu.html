@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MegaMenu</title>
+  <script>
+    const htmlElem = document.getElementsByTagName('html')[0];
+    htmlElem.classList.add('js');
+  </script>
+  <link rel="stylesheet" href="css/megamenu.css">
+</head>
+<body>
+  <nav>
+    <ul class="globalNav" id="globalnav">
+      <li class="globalNav__item"><a href="news.html">お知らせ</a></li>
+      <li class="globalNav__item">
+        <a class="globalNav__hasChild" href="company.html">会社情報</a>
+        <div class="globalNav__childContainer" id="menu_company" hidden>
+          <div class="globalNavDropdown">
+            <a class="globalNavDropdown__dirName" href="company.html">会社情報</a>
+            <ul class="globalNavDropdown__items">
+              <li class="globalNavDropdown__item"><a href="profile.html">会社概要</a></li>
+              <li class="globalNavDropdown__item"><a href="history.html">沿革</a></li>
+              <li class="globalNavDropdown__item"><a href="access.html">アクセス</a></li>
+            </ul>
+            <button class="globalNav__childClose" type="button">閉じる</button>
+          </div><!-- /.globalNavDropdown -->
+        </div><!-- /.globalNav__childContainer -->
+      </li>
+      <li class="globalNav__item"><a href="products.html">商品</a></li>
+      <li class="globalNav__item"><a href="about.html">当サイトについて</a></li>
+    </ul>
+  </nav>
+  <script type="module">
+    import MegaMenu from '../src/MegaMenu.js';
+    const megaMenu = new MegaMenu();
+    megaMenu.init();
+  </script>
+</body>
+</html>
