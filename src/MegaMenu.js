@@ -1,14 +1,15 @@
-/*!
+/*
  * メガメニューの制御
  *
  * 参考:
  * https://www.w3.org/WAI/ARIA/apg/patterns/menubutton/
  * https://www.w3.org/WAI/ARIA/apg/patterns/menu/
  */
-import slidefunc from "./slidefunc";
+import slidefunc from './slidefunc';
 
 export default class MegaMenu {
     constructor(options) {
+        /* eslint-disable no-multi-spaces,key-spacing */
         this.defaults = {
             rootSelector       : '.globalNav',
             menuItemSelector   : '.globalNav__item > a',
@@ -16,18 +17,19 @@ export default class MegaMenu {
             closeButtonSelector: '.globalNav__childClose',
             closeMenuDelay     : 500,
         };
+        /* eslint-enable no-multi-spaces,key-spacing */
         this.settings = Object.assign(this.defaults, options);
 
-        this.rootElem        = document.querySelector(this.settings.rootSelector);
-        this.menuItem        = document.querySelectorAll(this.settings.menuItemSelector);
-        this.openedElem      = null;
+        this.rootElem = document.querySelector(this.settings.rootSelector);
+        this.menuItem = document.querySelectorAll(this.settings.menuItemSelector);
+        this.openedElem = null;
         this.openedElemLinks = null;
-        this.closeTimerId    = null;
+        this.closeTimerId = null;
 
-        this.openMenuHandler        = null;
-        this.closeMenuHandler       = null;
-        this.keepOpenMenuHandler    = null;
-        this.closeByButtonHandler   = null;
+        this.openMenuHandler = null;
+        this.closeMenuHandler = null;
+        this.keepOpenMenuHandler = null;
+        this.closeByButtonHandler = null;
         this.keyboardControlHandler = null;
         this.closeByFocusoutHandler = null;
         this.childMenukeyboardControlHandler = null;
@@ -44,6 +46,7 @@ export default class MegaMenu {
             if (this.closeTimerId) {
                 window.clearTimeout(this.closeTimerId);
             }
+
             return;
         }
 
@@ -61,7 +64,7 @@ export default class MegaMenu {
     }
 
     closeMenu(_, immediately = false) {
-        const promise = new Promise(resolve => {
+        const promise = new Promise((resolve) => {
             if (this.openedElem) {
                 this.closeTimerId = window.setTimeout(async () => {
                     if (this.openedElem) {
@@ -76,6 +79,7 @@ export default class MegaMenu {
                 }, immediately ? 0 : this.settings.closeMenuDelay);
             }
         });
+
         return promise;
     }
 
@@ -156,7 +160,7 @@ export default class MegaMenu {
     destroy() {
         this.rootElem.removeEventListener('focusout', this.closeByFocusoutHandler);
 
-        this.menuItem.forEach(elem => {
+        this.menuItem.forEach((elem) => {
             elem.removeEventListener('keydown', this.keyboardControlHandler);
             elem.removeEventListener('click', this.openMenuHandler);
             elem.removeEventListener('mouseenter', this.openMenuHandler);
@@ -182,16 +186,16 @@ export default class MegaMenu {
     }
 
     init() {
-        this.openMenuHandler        = this.openMenu.bind(this);
-        this.closeMenuHandler       = this.closeMenu.bind(this);
-        this.keepOpenMenuHandler    = this.keepOpenMenu.bind(this);
-        this.closeByButtonHandler   = this.closeByButton.bind(this);
+        this.openMenuHandler = this.openMenu.bind(this);
+        this.closeMenuHandler = this.closeMenu.bind(this);
+        this.keepOpenMenuHandler = this.keepOpenMenu.bind(this);
+        this.closeByButtonHandler = this.closeByButton.bind(this);
         this.keyboardControlHandler = this.keyboardControl.bind(this);
         this.closeByFocusoutHandler = this.closeByFocusout.bind(this);
         this.childMenukeyboardControlHandler = this.childMenukeyboardControl.bind(this);
 
         this.rootElem.addEventListener('focusout', this.closeByFocusoutHandler);
-        this.menuItem.forEach(elem => {
+        this.menuItem.forEach((elem) => {
             elem.addEventListener('keydown', this.keyboardControlHandler);
             elem.addEventListener('click', this.openMenuHandler); // NOTE: For Screen Reader(ex. VoiceOverのCtrl + Option + Space)
             elem.addEventListener('mouseenter', this.openMenuHandler);

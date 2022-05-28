@@ -1,0 +1,17 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": ["eslint:recommended", "@mitsue"],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "reportUnusedDisableDirectives": false,
+    "rules": {
+        "semi": [2, "always"],
+        "object-curly-spacing": ["error", "always"]
+    },
+    "ignorePatterns": ["node_modules/**/*", "cypress/**/*", "src/slidefunc.js"]
+}
