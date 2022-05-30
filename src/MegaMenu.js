@@ -158,6 +158,7 @@ export default class MegaMenu {
     }
 
     destroy() {
+        this.rootElem.classList.remove(`${this.settings.rootSelector.replace('.', '')}--enableMegaMenu`);
         this.rootElem.removeEventListener('focusout', this.closeByFocusoutHandler);
 
         this.menuItem.forEach((elem) => {
@@ -176,7 +177,7 @@ export default class MegaMenu {
                 elem.removeAttribute('aria-haspopup');
                 childMenu.removeEventListener('mouseenter', this.keepOpenMenuHandler);
                 childMenu.removeEventListener('mouseleave', this.closeMenuHandler);
-                childMenu.removeEventListener('keydown');
+                childMenu.removeEventListener('keydown', this.keyboardControlHandler);
                 childMenu.removeAttribute('aria-hidden');
 
                 const closeButton = childMenu.querySelector(this.settings.closeButtonSelector);
@@ -194,6 +195,7 @@ export default class MegaMenu {
         this.closeByFocusoutHandler = this.closeByFocusout.bind(this);
         this.childMenukeyboardControlHandler = this.childMenukeyboardControl.bind(this);
 
+        this.rootElem.classList.add(`${this.settings.rootSelector.replace('.', '')}--enableMegaMenu`);
         this.rootElem.addEventListener('focusout', this.closeByFocusoutHandler);
         this.menuItem.forEach((elem) => {
             elem.addEventListener('keydown', this.keyboardControlHandler);
