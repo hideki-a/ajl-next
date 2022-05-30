@@ -22,7 +22,7 @@ export default class Tab {
         this.tabPanelsIds = [];
         this.activeTabNumber = null;
         this.nTabPanels = null;
-        this.methodStack = [];
+        this.methodStack = {};
     }
 
     _getTabIndex(tabId) {
