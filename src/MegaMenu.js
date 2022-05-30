@@ -5,7 +5,7 @@
  * https://www.w3.org/WAI/ARIA/apg/patterns/menubutton/
  * https://www.w3.org/WAI/ARIA/apg/patterns/menu/
  */
-import slidefunc from './slidefunc';
+import slidefunc from './snippets/slidefunc';
 
 export default class MegaMenu {
     constructor(options) {

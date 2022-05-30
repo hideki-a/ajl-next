@@ -13,5 +13,5 @@
         "semi": [2, "always"],
         "object-curly-spacing": ["error", "always"]
     },
-    "ignorePatterns": ["node_modules/**/*", "cypress/**/*", "src/slidefunc.js"]
+    "ignorePatterns": ["node_modules/**/*", "cypress/**/*", "src/snippets/slidefunc.js"]
 }
