@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab</title>
+  <script>
+    const htmlElem = document.getElementsByTagName('html')[0];
+    htmlElem.classList.add('js');
+  </script>
+  <link rel="stylesheet" href="css/tab.css">
+</head>
+<body>
+  <div class="entryListTab">
+    <dl class="entryCategory">
+      <dt>カテゴリ</dt>
+      <dd>
+        <div class="entryListTab__tabList">
+          <button type="button" id="tab_all">すべて</button>
+          <button type="button" id="tab_railway">鉄道</button>
+          <button type="button" id="tab_aircraft">航空</button>
+          <button type="button" id="tab_ship">船舶</button>
+        </div>
+      </dd>
+    </dl>
+    <div class="entryListTab__tabs">
+      <div class="entryListTab__tab" id="all">
+        <ul class="entryList">
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-11-24">2021年11月24日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">鉄道</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-11-24">2021年11月24日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">航空</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入りますニュースタイトルが入りますニュースタイトルが入りますニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-10-23">2021年10月23日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">船舶</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-10-23">2021年10月23日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">航空</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="entryListTab__tab" id="railway">
+        <ul class="entryList">
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-11-24">2021年11月24日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">鉄道</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="entryListTab__tab" id="aircraft">
+        <ul class="entryList">
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-11-24">2021年11月24日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">航空</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入りますニュースタイトルが入りますニュースタイトルが入りますニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-10-23">2021年10月23日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">航空</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="entryListTab__tab" id="ship">
+        <ul class="entryList">
+          <li class="entryList__item">
+            <a class="entryList__anchor" href="/static/news-detail.html">
+              <time class="entryList__date" datetime="2021-10-23">2021年10月23日</time>
+              <span class="entryList__category"><span class="entryList__categoryText">船舶</span></span>
+              <span class="entryList__title"><b>ニュースタイトルが入ります</b></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script type="module">
+    import Tab from '../src/Tab.js';
+    const tabOptions = {
+      rootSelector: '.entryListTab',
+      tabEnabledClassName: '.entryListTab--enabled',
+      tabListClassName: '.entryListTab__tabList',
+      tabPanelsRootClassName: '.entryListTab__tabs',
+    };
+    const tab = new Tab(tabOptions);
+    tab.init();
+  </script>
+</body>
+</html>
