@@ -169,7 +169,9 @@ export default class MegaMenu {
 
             const childMenu = elem.parentNode.querySelector(this.settings.childMenuSelector);
             if (childMenu) {
-                elem.setAttribute('href', elem.dataset.href);
+                if (elem.dataset.href) {
+                    elem.setAttribute('href', elem.dataset.href);
+                }
                 elem.removeAttribute('tabIndex');
                 elem.removeAttribute('role');
                 elem.removeAttribute('aria-controls');
