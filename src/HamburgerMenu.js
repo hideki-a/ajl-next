@@ -1,6 +1,6 @@
 import loopFocus from './snippets/loopfocus';
 
-export default class HambagerMenu {
+export default class HamburgerMenu {
     constructor(options) {
         /* eslint-disable no-multi-spaces,key-spacing */
         this.defaults = {
@@ -46,18 +46,18 @@ export default class HambagerMenu {
         }
     }
 
-    enableHambagerMode() {
+    enableHamburgerMode() {
         this.elem.hidden = true;
-        this.elem.classList.add('--enableHambager');
+        this.elem.classList.add('--enableHamburger');
         this.elem.setAttribute('aria-hidden', !this.isMenuOpen);
         this.buttonElem.hidden = false;
         this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
         this.buttonElem.setAttribute('aria-controls', this.menuId);
     }
 
-    disablehambagerMode() {
+    disableHamburgerMode() {
         this.elem.hidden = false;
-        this.elem.classList.remove('--enableHambager');
+        this.elem.classList.remove('--enableHamburger');
         this.elem.removeAttribute('aria-hidden');
         this.buttonElem.hidden = true;
     }
