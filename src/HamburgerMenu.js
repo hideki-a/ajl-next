@@ -54,6 +54,7 @@ export default class HamburgerMenu {
         this.buttonElem.hidden = false;
         this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
         this.buttonElem.setAttribute('aria-controls', this.menuId);
+        this.buttonElem.setAttribute('aria-haspopup', 'true');
     }
 
     disableHamburgerMode() {
