@@ -9,10 +9,10 @@ export default class HambagerMenu {
             loopFocusContainer(parent) {
                 return parent.closest('nav');
             },
-            openCallback() {
+            async openCallback() {
                 // Void
             },
-            closeCallback() {
+            async closeCallback() {
                 // Void
             },
         };
@@ -26,18 +26,18 @@ export default class HambagerMenu {
         this.removeLoopFocus = null;
     }
 
-    toggleMenu() {
+    async toggleMenu() {
         if (this.isMenuOpen) {
             this.elem.hidden = true;
             this.isMenuOpen = false;
             this.elem.setAttribute('aria-hidden', !this.isMenuOpen);
             this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
-            this.settings.closeCallback();
+            await this.settings.closeCallback();
             this.removeLoopFocus();
         } else {
             this.elem.hidden = false;
             this.isMenuOpen = true;
-            this.settings.openCallback();
+            await this.settings.openCallback();
             this.elem.setAttribute('aria-hidden', !this.isMenuOpen);
             this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
             this.removeLoopFocus = loopFocus({
