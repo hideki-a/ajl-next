@@ -48,6 +48,7 @@ export default class HambagerMenu {
 
     enableHambagerMode() {
         this.elem.hidden = true;
+        this.elem.classList.add('--enableHambager');
         this.elem.setAttribute('aria-hidden', !this.isMenuOpen);
         this.buttonElem.hidden = false;
         this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
@@ -56,6 +57,7 @@ export default class HambagerMenu {
 
     disablehambagerMode() {
         this.elem.hidden = false;
+        this.elem.classList.remove('--enableHambager');
         this.elem.removeAttribute('aria-hidden');
         this.buttonElem.hidden = true;
     }
