@@ -6,6 +6,7 @@ export default class HamburgerMenu {
         this.defaults = {
             menuElemId        : 'globalnav',
             buttonElemSelector: '#toggle_gnav',
+            inertTarget       : null,
             loopFocusContainer(parent) {
                 return parent.closest('nav');
             },
@@ -33,16 +34,30 @@ export default class HamburgerMenu {
             this.elem.setAttribute('aria-hidden', !this.isMenuOpen);
             this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
             await this.settings.closeCallback();
+
             this.removeLoopFocus();
+            if (this.settings.inertTarget) {
+                this.settings.inertTarget.forEach((selector) => {
+                    const target = document.querySelector(selector);
+                    target.inert = false;
+                });
+            }
         } else {
             this.elem.hidden = false;
             this.isMenuOpen = true;
             await this.settings.openCallback();
             this.elem.setAttribute('aria-hidden', !this.isMenuOpen);
             this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
+
             this.removeLoopFocus = loopFocus({
                 el: this.settings.loopFocusContainer(this.elem),
             });
+            if (this.settings.inertTarget) {
+                this.settings.inertTarget.forEach((selector) => {
+                    const target = document.querySelector(selector);
+                    target.inert = true;
+                });
+            }
         }
     }
 
