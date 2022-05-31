@@ -50,6 +50,7 @@ export default class HamburgerMenu {
         this.elem.hidden = true;
         this.elem.classList.add('--enableHamburger');
         this.elem.setAttribute('aria-hidden', !this.isMenuOpen);
+        this.elem.addEventListener('keydown', this.closeByKeyHandler);
         this.buttonElem.hidden = false;
         this.buttonElem.setAttribute('aria-expanded', this.isMenuOpen);
         this.buttonElem.setAttribute('aria-controls', this.menuId);
@@ -59,10 +60,20 @@ export default class HamburgerMenu {
         this.elem.hidden = false;
         this.elem.classList.remove('--enableHamburger');
         this.elem.removeAttribute('aria-hidden');
+        this.elem.removeEventListener('keydown', this.closeByKeyHandler);
         this.buttonElem.hidden = true;
     }
 
+    closeByKey(e) {
+        if (e.keyCode === 27 && this.isMenuOpen) {
+            // Esc
+            this.toggleMenu();
+            this.buttonElem.focus();
+        }
+    }
+
     init() {
+        this.closeByKeyHandler = this.closeByKey.bind(this);
         this.buttonElem.addEventListener('click', () => {
             this.toggleMenu();
         });
