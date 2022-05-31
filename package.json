@@ -17,6 +17,7 @@
   "devDependencies": {
     "@mitsue/eslint-config": "^4.1.0",
     "cypress": "^9.7.0",
+    "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.16.0",
     "http-server": "^14.1.0",
     "husky": "^8.0.1",
