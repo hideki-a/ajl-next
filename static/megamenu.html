@@ -35,7 +35,9 @@
   </nav>
   <script type="module">
     import MegaMenu from '../src/MegaMenu.js';
-    const megaMenu = new MegaMenu();
+    const megaMenu = new MegaMenu({
+      openOnHover: true,
+    });
     megaMenu.init();
   </script>
 </body>

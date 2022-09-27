@@ -1,4 +1,4 @@
-/*
+/**
  * メガメニューの制御
  *
  * 参考:
@@ -16,6 +16,7 @@ export default class MegaMenu {
             childMenuSelector  : '.globalNav__childContainer',
             closeButtonSelector: '.globalNav__childClose',
             closeMenuDelay     : 500,
+            openOnHover: true,
         };
         /* eslint-enable no-multi-spaces,key-spacing */
         this.settings = Object.assign(this.defaults, options);
@@ -24,7 +25,10 @@ export default class MegaMenu {
         this.menuItem = document.querySelectorAll(this.settings.menuItemSelector);
         this.openedElem = null;
         this.openedElemLinks = null;
+        this.openTimerId = null;
+        this.slideDownTimerId = null;
         this.closeTimerId = null;
+        this.isAnimated = false;
 
         this.openMenuHandler = null;
         this.closeMenuHandler = null;
@@ -32,11 +36,22 @@ export default class MegaMenu {
         this.closeByButtonHandler = null;
         this.keyboardControlHandler = null;
         this.closeByFocusoutHandler = null;
-        this.childMenukeyboardControlHandler = null;
+        this.closeByAnotherAreaHandler = null;
+        this.childMenuKeyboardControlHandler = null;
+    }
+
+    static generateId() {
+        return `ajl_${Math.floor(Math.random() * 1000000)}`;
     }
 
     async openMenu(e, keydown = false) {
-        const childElem = e.target.nextElementSibling;
+        if (this.slideDownTimerId) {
+            clearTimeout(this.slideDownTimerId);
+        }
+
+        const menuItem = e.currentTarget;
+        const childElem = e.currentTarget.nextElementSibling;
+
         if (this.openedElem && this.openedElem !== childElem) {
             if (this.closeTimerId) {
                 window.clearTimeout(this.closeTimerId); // NOTE: サブメニューを持つ要素間をマウスで移動した時を考慮
@@ -52,31 +67,66 @@ export default class MegaMenu {
 
         if (childElem) {
             this.openedElem = childElem;
-            childElem.hidden = false;
-            slidefunc.slideDown(childElem);
-            e.target.setAttribute('aria-expanded', 'true');
-            childElem.setAttribute('aria-hidden', 'false');
-            this.openedElemLinks = childElem.getElementsByTagName('a');
-            if (keydown) {
-                // childElem.querySelector('a').focus();
-            }
+            this.slideDownTimerId = setTimeout(async () => {
+                if (this.isAnimated) {
+                    clearTimeout(this.openTimerId);
+                    this.openTimerId = setTimeout(() => {
+                        this.openMenu(e, keydown);
+                    }, 100);
+
+                    return;
+                }
+
+                childElem.hidden = false;
+                menuItem.setAttribute('aria-expanded', 'true');
+                childElem.setAttribute('aria-hidden', 'false');
+
+                this.isAnimated = true;
+                await slidefunc.slideDown(childElem, 500);
+                this.isAnimated = false;
+
+                this.openedElemLinks = childElem.getElementsByTagName('a');
+                this.openedElemLinks = Array.from(this.openedElemLinks).filter((elem) => !elem.parentNode.classList.contains('u-pcNoneByNav'));
+                if (keydown) {
+                    // childElem.querySelector('a').focus();
+                }
+            }, keydown ? 0 : 500);
         }
     }
 
-    closeMenu(_, immediately = false) {
+    closeMenu(e, immediately = false) {
         const promise = new Promise((resolve) => {
             if (this.openedElem) {
+                let delay = this.settings.closeMenuDelay;
+                if (immediately) {
+                    delay = 0;
+                } else if (e && e.type === 'click') {
+                    delay = 50;
+                }
+
                 this.closeTimerId = window.setTimeout(async () => {
+                    if (this.isAnimated) {
+                        clearTimeout(this.closeTimerId);
+                        this.closeTimerId = setTimeout(() => {
+                            this.closeMenu(e, immediately);
+                        }, 100);
+
+                        return;
+                    }
+
                     if (this.openedElem) {
+                        this.isAnimated = true;
+                        await slidefunc.slideUp(this.openedElem, immediately ? 0 : 500);
+                        this.isAnimated = false;
                         this.openedElem.hidden = true;
                         this.openedElem.setAttribute('aria-hidden', 'true');
                         this.openedElem.previousElementSibling.setAttribute('aria-expanded', 'false');
-                        await slidefunc.slideUp(this.openedElem);
+
                         this.openedElem = null;
                         this.openedElemLinks = null;
                     }
                     resolve();
-                }, immediately ? 0 : this.settings.closeMenuDelay);
+                }, delay);
             }
         });
 
@@ -119,7 +169,7 @@ export default class MegaMenu {
         }
     }
 
-    childMenukeyboardControl(e) {
+    childMenuKeyboardControl(e) {
         if (e.target.tagName.toLowerCase() === 'a') {
             if (e.keyCode === 40) {
                 // Down
@@ -157,15 +207,33 @@ export default class MegaMenu {
         }
     }
 
+    closeByAnotherArea(e) {
+        let match = false;
+        const paths = e.composedPath();
+        paths.forEach((path) => {
+            if (path.id === 'globalnav') {
+                match = true;
+            }
+        });
+
+        if (!match) {
+            this.closeMenu(null, true);
+        }
+    }
+
     destroy() {
         this.rootElem.classList.remove(`${this.settings.rootSelector.replace('.', '')}--enableMegaMenu`);
-        this.rootElem.removeEventListener('focusout', this.closeByFocusoutHandler);
+        if (this.settings.openOnHover) {
+            this.rootElem.removeEventListener('focusout', this.closeByFocusoutHandler);
+        }
 
         this.menuItem.forEach((elem) => {
             elem.removeEventListener('keydown', this.keyboardControlHandler);
             elem.removeEventListener('click', this.openMenuHandler);
-            elem.removeEventListener('mouseenter', this.openMenuHandler);
-            elem.removeEventListener('mouseleave', this.closeMenuHandler);
+            if (this.settings.openOnHover) {
+                elem.removeEventListener('mouseenter', this.openMenuHandler);
+                elem.removeEventListener('mouseleave', this.closeMenuHandler);
+            }
 
             const childMenu = elem.parentNode.querySelector(this.settings.childMenuSelector);
             if (childMenu) {
@@ -177,51 +245,81 @@ export default class MegaMenu {
                 elem.removeAttribute('aria-controls');
                 elem.removeAttribute('aria-expanded');
                 elem.removeAttribute('aria-haspopup');
-                childMenu.removeEventListener('mouseenter', this.keepOpenMenuHandler);
-                childMenu.removeEventListener('mouseleave', this.closeMenuHandler);
+                if (this.settings.openOnHover) {
+                    childMenu.removeEventListener('mouseenter', this.keepOpenMenuHandler);
+                    childMenu.removeEventListener('mouseleave', this.closeMenuHandler);
+                }
                 childMenu.removeEventListener('keydown', this.keyboardControlHandler);
                 childMenu.removeAttribute('aria-hidden');
+                childMenu.removeAttribute('style');
+                childMenu.hidden = false;
 
                 const closeButton = childMenu.querySelector(this.settings.closeButtonSelector);
                 closeButton.removeEventListener('click', this.closeByButtonHandler);
             }
         });
+
+        document.body.removeEventListener('click', this.closeByAnotherAreaHandler);
     }
 
     init() {
-        this.openMenuHandler = this.openMenu.bind(this);
+        if (this.settings.openOnHover) {
+            this.openMenuHandler = this.openMenu.bind(this);
+        } else {
+            this.openMenuHandler = (e) => {
+                if (this.openedElem === e.currentTarget.nextElementSibling) {
+                    this.closeMenu(e, false);
+                } else {
+                    this.openMenu(e, true);
+                }
+            };
+        }
         this.closeMenuHandler = this.closeMenu.bind(this);
         this.keepOpenMenuHandler = this.keepOpenMenu.bind(this);
         this.closeByButtonHandler = this.closeByButton.bind(this);
         this.keyboardControlHandler = this.keyboardControl.bind(this);
         this.closeByFocusoutHandler = this.closeByFocusout.bind(this);
-        this.childMenukeyboardControlHandler = this.childMenukeyboardControl.bind(this);
+        this.closeByAnotherAreaHandler = this.closeByAnotherArea.bind(this);
+        this.childMenuKeyboardControlHandler = this.childMenuKeyboardControl.bind(this);
 
         this.rootElem.classList.add(`${this.settings.rootSelector.replace('.', '')}--enableMegaMenu`);
-        this.rootElem.addEventListener('focusout', this.closeByFocusoutHandler);
+        if (this.settings.openOnHover) {
+            this.rootElem.addEventListener('focusout', this.closeByFocusoutHandler);
+        }
         this.menuItem.forEach((elem) => {
             elem.addEventListener('keydown', this.keyboardControlHandler);
             elem.addEventListener('click', this.openMenuHandler); // NOTE: For Screen Reader(ex. VoiceOverのCtrl + Option + Space)
-            elem.addEventListener('mouseenter', this.openMenuHandler);
-            elem.addEventListener('mouseleave', this.closeMenuHandler);
+            if (this.settings.openOnHover) {
+                elem.addEventListener('mouseenter', this.openMenuHandler);
+                elem.addEventListener('mouseleave', this.closeMenuHandler);
+            }
 
             const childMenu = elem.parentNode.querySelector(this.settings.childMenuSelector);
             if (childMenu) {
+                let { id } = childMenu;
+                if (!id) {
+                    id = MegaMenu.generateId();
+                    childMenu.id = id;
+                }
                 elem.dataset.href = elem.getAttribute('href');
                 elem.removeAttribute('href');
                 elem.tabIndex = 0;
                 elem.setAttribute('role', 'button');
-                elem.setAttribute('aria-controls', childMenu.id);
+                elem.setAttribute('aria-controls', id);
                 elem.setAttribute('aria-expanded', 'false');
                 elem.setAttribute('aria-haspopup', 'true');
-                childMenu.addEventListener('mouseenter', this.keepOpenMenuHandler);
-                childMenu.addEventListener('mouseleave', this.closeMenuHandler);
-                childMenu.addEventListener('keydown', this.childMenukeyboardControlHandler);
+                if (this.settings.openOnHover) {
+                    childMenu.addEventListener('mouseenter', this.keepOpenMenuHandler);
+                    childMenu.addEventListener('mouseleave', this.closeMenuHandler);
+                }
+                childMenu.addEventListener('keydown', this.childMenuKeyboardControlHandler);
                 childMenu.setAttribute('aria-hidden', 'true');
 
                 const closeButton = childMenu.querySelector(this.settings.closeButtonSelector);
                 closeButton.addEventListener('click', this.closeByButtonHandler);
             }
         });
+
+        document.body.addEventListener('click', this.closeByAnotherAreaHandler);
     }
 }
